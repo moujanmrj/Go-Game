@@ -26,10 +26,10 @@ void startGame(int n,int map[n][n],bool singlePlayer,bool loaded){
 	}
 
 	//game starts
-	while(1)
-	{
+	while(1){
 		clear
 		printMap(n,map);
+		
 	}
 }
 
