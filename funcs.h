@@ -22,4 +22,14 @@ int randomNumber(int min,int max){
 	return rand()%(max+1 - min) + min;
 }
 
+int nextInt(){
+	int n;
+	scanf("%d" , &n);
+	return n;
+}
+
+int toInt(char a){
+	return a - '0';
+}
+
 #endif
