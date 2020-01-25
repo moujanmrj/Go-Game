@@ -16,10 +16,23 @@ typedef struct cell{
 	char name[10];
 	int x, y;
 	int energy;
-};
+	int team;
+	struct cell* next;
+}Cell;
 
 int randomNumber(int min,int max){
 	return rand()%(max+1 - min) + min;
+}
+
+char * randomString(){
+	char *str = (char *) malloc((10 + 1) * sizeof(char)); 
+	const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
+	for (size_t i = 0; i < 10; i++){ 
+		int key = rand() % (sizeof(charset) / sizeof(char) - 1); 
+		str[i] = charset[key]; 
+		} 
+		str[10] = '\0'; 
+		return str; 
 }
 
 int nextInt(){
