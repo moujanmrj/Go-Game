@@ -1,9 +1,9 @@
 #include "includes.h"
 #include "funcs.h"
 
-char symbolp1[] = " X ";
-char symbolp2[] = " Y ";
-
+char symbolp1[] = "XXXXXXX";
+char symbolp2[] = "OOOOOOO";
+WORD Attributes = 0;
 Cell* head = NULL;
 Cell* addCell (int x,int y, int team);
 bool access(int n,Tile map[n][n] , int x, int y);
@@ -240,6 +240,15 @@ Cell* addCell (int x,int y,int team){
 	return cell;
 }
 
+void SetConsoleColour(WORD* Attributes, DWORD Colour)
+{
+    CONSOLE_SCREEN_BUFFER_INFO Info;
+    HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(hStdout, &Info);
+    *Attributes = Info.wAttributes;
+    SetConsoleTextAttribute(hStdout, Colour);
+}
+
 bool access(int n,Tile map[n][n] , int x, int y){
 	if (x<0 || x>=n || y<0 || y>=n) return false;
 	if (map[x][y].type == Forbidden) return false;
@@ -254,30 +263,66 @@ bool access(int n,Tile map[n][n] , int x, int y){
 void printMap(int n,Tile map[n][n]){
 	for (int i=0;i<n;i++){
 		for ( int j=0;j<n;j+=2){
-			printf("_____     ");
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
+			printf("       ");
 		}
 		printf("\n");
 		for ( int j=0;j<n;j+=2){
-			printf("|%s|     " , getSymbol(i,j,n,map));
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
+			printf("       ");
 		}
 		printf("\n");
 		for ( int j=0;j<n;j+=2){
-			printf("|___|     ");
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
+			printf("       ");
 		}
 		printf("\n");
 		for ( int j=1;j<n;j+=2){
-			printf("     _____");
+			printf("       ");
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
 		}
 		printf("\n");
 		for ( int j=1;j<n;j+=2){
-			printf("     |%s|" , getSymbol(i,j,n,map));
+			printf("       ");
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
 		}
 		printf("\n");
 		for ( int j=1;j<n;j+=2){
-			printf("     |___|");
+			printf("       ");
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
 		}
 		printf("\n");
-
+		 	SetConsoleColour(&Attributes, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN);
 	}
 }
 
@@ -292,10 +337,10 @@ char * getSymbol(int x , int y,int n,Tile map[n][n]){
 		}
 		current = current->next;
 	}
-	if(map[x][y].type == Forbidden)return "\\|/";
-	if(map[x][y].type == Mitosis)return "Mit";
-	if(map[x][y].type == Energy)return "Eng";
-	return "   ";
+	if(map[x][y].type == Forbidden)return "|||||||";
+//	if(map[x][y].type == Mitosis)return "Mit";
+//	if(map[x][y].type == Energy)return "Eng";
+	return "       ";
 }
 	
 Cell* showList(int n){

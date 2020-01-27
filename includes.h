@@ -14,6 +14,11 @@
 #define for2(X) for(int i = 0;i < X;i++)for(int j = 0;j < X;j++)
 #define setRed SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BACKGROUND_INTENSITY|BACKGROUND_RED);
 
+#define red SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BACKGROUND_INTENSITY|BACKGROUND_RED);
+#define yellow SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BACKGROUND_INTENSITY|BACKGROUND_GREEN|BACKGROUND_BLUE);
+#define green SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BACKGROUND_INTENSITY|BACKGROUND_GREEN);
+#define blue SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),BACKGROUND_INTENSITY|BACKGROUND_BLUE);
+#define normal SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), Attributes);
 #ifndef _INCLUDES_H
 #define _INCLUDES_H
 
