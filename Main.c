@@ -1,8 +1,8 @@
 #include "includes.h"
 #include "funcs.h"
 
-char symbolp1[] = "XXXXXXX";
-char symbolp2[] = "OOOOOOO";
+char symbolp1[] = "   X   ";
+char symbolp2[] = "   O   ";
 WORD Attributes = 0;
 Cell* head = NULL;
 Cell* addCell (int x,int y, int team);
@@ -53,7 +53,7 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 			movePlayer(n,map,movingCell);
 		}
 		if (play == 2){
-			if(checkEmpty(n,map,movingCell->x,movingCell->y) == 0)
+			if(checkEmpty(n,map,movingCell->x,movingCell->y) == 0 || movingCell->energy < 80)
 				printf ("Split Failed!");
 			else{
 				Cell * cell = addCell(movingCell->x,movingCell->y,movingCell->team);
@@ -222,7 +222,7 @@ int main(){
 Cell* addCell (int x,int y,int team){
 	Cell * cell = (Cell *) malloc (sizeof(Cell));
 	strcpy(cell->name, randomString());
-	cell->energy = 80;
+	cell->energy = 40;
 	cell->x = x;
 	cell->y = y;
 	cell->team = team;
@@ -261,69 +261,125 @@ bool access(int n,Tile map[n][n] , int x, int y){
 }
 
 void printMap(int n,Tile map[n][n]){
-	for (int i=0;i<n;i++){
-		for ( int j=0;j<n;j+=2){
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-			printf("       ");
-		}
-		printf("\n");
-		for ( int j=0;j<n;j+=2){
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-			printf("       ");
-		}
-		printf("\n");
-		for ( int j=0;j<n;j+=2){
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-			printf("       ");
-		}
-		printf("\n");
-		for ( int j=1;j<n;j+=2){
-			printf("       ");
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-		}
-		printf("\n");
-		for ( int j=1;j<n;j+=2){
-			printf("       ");
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-		}
-		printf("\n");
-		for ( int j=1;j<n;j+=2){
-			printf("       ");
-			if(map[i][j].type == Forbidden) red;
-			if(map[i][j].type == Energy) yellow;
-			if(map[i][j].type == Mitosis) green;
-			if(map[i][j].type == Normal) blue;
-			printf("%s" , getSymbol(i,j,n,map));
-			normal
-		}
-		printf("\n");
-		 	SetConsoleColour(&Attributes, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN);
+	for ( int j=0;j<n;j+=2){ // khate 0
+		if(map[0][j].type == Forbidden) red;
+		if(map[0][j].type == Energy) yellow;
+		if(map[0][j].type == Mitosis) green;
+		if(map[0][j].type == Normal) blue;
+		printf("       " , getSymbol(0,j,n,map));
+		normal
+		printf(" ");
+		normal
+		printf("       ");
+		printf(" ");
 	}
+	printf("\n");
+	for (int i=0;i<n;i++){
+		for ( int j=0;j<n;j+=2){ // khate 1
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("       " , getSymbol(i,j,n,map));
+			normal
+			printf(" ");
+			if(i != 0)
+			{
+				if(map[i-1][j+1].type == Forbidden) red;
+				if(map[i-1][j+1].type == Energy) yellow;
+				if(map[i-1][j+1].type == Mitosis) green;
+				if(map[i-1][j+1].type == Normal) blue;
+				printf("_______",getSymbol(i-1,j+1,n,map));
+				normal
+			}
+			else
+			{
+				normal
+				printf("       ");
+			}
+			printf(" ");
+		}
+		printf("\n");
+		for ( int j=0;j<n;j+=2){ // khate 2
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("%s" , getSymbol(i,j,n,map));
+			normal
+			printf(" ");
+			if(map[i][j+1].type == Forbidden) red;
+			if(map[i][j+1].type == Energy) yellow;
+			if(map[i][j+1].type == Mitosis) green;
+			if(map[i][j+1].type == Normal) blue;
+			printf("       " , getSymbol(i,j+1,n,map));
+			normal
+			printf(" ");
+		}
+		printf("\n");
+		for ( int j=0;j<n;j+=2){ // khate 3
+			if(map[i][j].type == Forbidden) red;
+			if(map[i][j].type == Energy) yellow;	
+			if(map[i][j].type == Mitosis) green;
+			if(map[i][j].type == Normal) blue;
+			printf("_______" , getSymbol(i,j,n,map));
+			normal
+			printf(" ");
+			if(map[i][j+1].type == Forbidden) red;
+			if(map[i][j+1].type == Energy) yellow;
+			if(map[i][j+1].type == Mitosis) green;
+			if(map[i][j+1].type == Normal) blue;
+			printf("%s" , getSymbol(i,j+1,n,map));
+			normal
+			printf(" ");
+		}
+		printf("\n");
+		for ( int j=0;j<n;j+=2){ // khate 4
+			if(i != n-1){
+				if(map[i+1][j].type == Forbidden) red;
+				if(map[i+1][j].type == Energy) yellow;
+				if(map[i+1][j].type == Mitosis) green;
+				if(map[i+1][j].type == Normal) blue;
+				printf("       " , getSymbol(i+1,j,n,map));
+				normal
+				printf(" ");
+			}
+			else
+			{
+				normal
+				printf("       " , getSymbol(i+1,j,n,map));
+				printf(" ");
+			}
+			if(map[i][j+1].type == Forbidden) red;
+			if(map[i][j+1].type == Energy) yellow;
+			if(map[i][j+1].type == Mitosis) green;
+			if(map[i][j+1].type == Normal) blue;
+			printf("       " , getSymbol(i,j+1,n,map));
+			normal
+			printf(" ");
+		}
+		printf("\n");
+
+	}
+	if(n%2 == 0)
+	{
+		
+		for ( int j=0;j<n;j+=2){ // khate 0
+		normal
+		printf("       ");
+		printf(" ");
+		if(map[n-1][j+1].type == Forbidden) red;
+		if(map[n-1][j+1].type == Energy) yellow;
+		if(map[n-1][j+1].type == Mitosis) green;
+		if(map[n-1][j+1].type == Normal) blue;
+		printf("_______" , getSymbol(n-1,j+1,n,map));
+		normal
+		printf(" ");
+		
+		}
+	}
+		printf("\n");
+		SetConsoleColour(&Attributes, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN);
 }
 
 char * getSymbol(int x , int y,int n,Tile map[n][n]){
@@ -337,7 +393,7 @@ char * getSymbol(int x , int y,int n,Tile map[n][n]){
 		}
 		current = current->next;
 	}
-	if(map[x][y].type == Forbidden)return "|||||||";
+	if(map[x][y].type == Forbidden)return "       ";
 //	if(map[x][y].type == Mitosis)return "Mit";
 //	if(map[x][y].type == Energy)return "Eng";
 	return "       ";
