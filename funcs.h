@@ -17,6 +17,8 @@ typedef struct cell{
 	int x, y;
 	int energy;
 	int team;
+	bool canMove;
+	int num;
 	struct cell* next;
 }Cell;
 

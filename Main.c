@@ -8,7 +8,7 @@ Cell* head = NULL;
 Cell* addCell (int x,int y, int team);
 bool access(int n,Tile map[n][n] , int x, int y);
 char * getSymbol(int x , int y , int n , Tile map[n][n]);
-Cell* showList();
+Cell* showList(int n);
 void movePlayer(int n,Tile map[n][n],Cell * movingCell);
 bool checkEmpty(int n,Tile map[n][n],int x,int y);
 void removeCell (Cell* movingCell);
@@ -25,7 +25,20 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 				randX = randomNumber(0,n);
 				randY = randomNumber(0,n);
 			}
-			addCell(randX,randY,1);
+			Cell * nc = addCell(randX,randY,1);
+			nc->canMove = true;
+		}
+		if (!singlePlayer){
+			count(cellNum){
+				int randX = randomNumber(0,n);
+				int randY = randomNumber(0,n);
+				while(!access(n,map,randX,randY)){
+					randX = randomNumber(0,n);
+					randY = randomNumber(0,n);
+				}
+				Cell* nc = addCell(randX,randY,2);
+				nc->canMove = false;
+			}
 		}
 	}
 
@@ -33,7 +46,7 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 	while(1){
 		clear
 		printMap(n,map);
-		Cell* movingCell = showList();
+		Cell* movingCell = showList(n);
 		printMoves
 		int play = nextInt();
 		if (play == 1){
@@ -43,10 +56,13 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 			if(checkEmpty(n,map,movingCell->x,movingCell->y) == 0)
 				printf ("Split Failed!");
 			else{
-				addCell(movingCell->x,movingCell->y,movingCell->team);
 				Cell * cell = addCell(movingCell->x,movingCell->y,movingCell->team);
+				cell->canMove = true;
+				cell = addCell(movingCell->x,movingCell->y,movingCell->team);
+				cell->canMove = true;
 				randomMove(n,map,cell);
 				removeCell(movingCell);
+				movingCell= cell;
 			}
 		}
 		if (play == 3){
@@ -63,6 +79,7 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 					map[movingCell->x][movingCell->y].energy += movingCell->energy - 100;
 					movingCell->energy = 100;
 				}
+				movingCell->canMove = false;
 			}
 			else{
 				printf("Boost Energy Failed!");
@@ -109,7 +126,24 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 				free(rm);
 			}
 			return;
-		}	
+		}
+		bool endTurn = true;
+		Cell* current = head;
+		while(current!=NULL){
+			if(current->canMove){
+				endTurn = false;
+				break;
+			}
+			current = current->next;
+		}
+		if(endTurn && !singlePlayer){
+			current = head;
+			while(current != NULL){
+				if(current->team != movingCell->team) current->canMove = true;
+				current = current->next;
+			}
+		}
+		if(singlePlayer) movingCell->canMove = true;
 	}
 }
 
@@ -249,7 +283,6 @@ void printMap(int n,Tile map[n][n]){
 
 char * getSymbol(int x , int y,int n,Tile map[n][n]){
 	Cell * current =head;
-	if(map[x][y].type == Forbidden)return "\\|/";
 	while(current != NULL){
 		if(current->x == x && current->y == y){
 			if(current->team == 1)
@@ -259,25 +292,35 @@ char * getSymbol(int x , int y,int n,Tile map[n][n]){
 		}
 		current = current->next;
 	}
+	if(map[x][y].type == Forbidden)return "\\|/";
+	if(map[x][y].type == Mitosis)return "Mit";
+	if(map[x][y].type == Energy)return "Eng";
 	return "   ";
 }
 	
-Cell* showList(){
+Cell* showList(int n){
 	Cell* current = head;
 	int i=1;
 	while (current != NULL){
-		printf ("%d) %s (%d,%d) | Energy: %d\n",i,current->name,current->x,current->y,current->energy);
-		i++;
+		if(current->canMove){
+			printf ("%d) %s (%d,%d) | Energy: %d\n",i,current->name,current->y,n-1-current->x,current->energy);
+			current->num = i;
+			i++;
+		}
+		else{
+			current->num = 0;
+		}
 		current = current->next;
 	}
 	int chooseCell = nextInt();	
-	i=1;
 	Cell* find = head;
-	while (i != chooseCell){
+	while (chooseCell != find->num){
 		find = find->next;
-		i++;
 	}
+	if(chooseCell == find->num)
 	return find;
+	printf("Wrong input!");
+	return showList(n);
 }
 
 void movePlayer(int n,Tile map[n][n],Cell * movingCell){
@@ -344,6 +387,7 @@ void movePlayer(int n,Tile map[n][n],Cell * movingCell){
 			printf("Wrong Direction!\n");
 			goto startMove;
 		}
+		movingCell->canMove = false;
 }
 
 bool checkEmpty(int n,Tile map[n][n],int x,int y){
