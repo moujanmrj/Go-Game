@@ -9,9 +9,11 @@ Cell* addCell (int x,int y, int team);
 bool access(int n,Tile map[n][n] , int x, int y);
 char * getSymbol(int x , int y , int n , Tile map[n][n]);
 Cell* showList();
-movePlayer(int n,Tile map[n][n],Cell * movingCell);
-
+void movePlayer(int n,Tile map[n][n],Cell * movingCell);
+bool checkEmpty(int n,Tile map[n][n],int x,int y);
+void removeCell (Cell* movingCell);
 void printMap (int n,Tile map[n][n]);
+void randomMove(int n,Tile map[n][n],Cell * movingCell);
 
 void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 	if (!loaded){
@@ -65,6 +67,48 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 			else{
 				printf("Boost Energy Failed!");
 			}
+		}
+		if (play == 4){
+			int count=0;
+			Cell* current = head;
+			while (current != NULL){
+				count++;
+				current = current->next;
+			}
+			FILE *fptr = fopen("cells.mouj", "wb");
+			if(fptr == NULL){
+				printf("Save failed! please make sure file is closed");
+				continue;
+			}
+			fwrite(&count,sizeof(int) , 1,fptr);
+			Cell* writeCell = head;
+			for(int i = 0; i < count; i++){
+				fwrite(writeCell, sizeof(Cell), 1, fptr);
+				writeCell = writeCell->next;
+			}
+			fclose(fptr);
+			fptr = fopen("map.mouj","wb");
+			
+			if(fptr == NULL){
+				printf("Save failed!\nplease make sure file is closed");
+				continue;
+			}
+			fwrite(&n,sizeof(int),1,fptr);
+			for2(n){
+				fwrite(&map[i][j] , sizeof(Tile) , 1 ,fptr);
+			}
+			fwrite(&singlePlayer,sizeof(bool),1,fptr);
+			fclose(fptr);
+		}
+		if (play == 5){
+			Cell * current = head;
+			head = NULL;
+			while(current != NULL){
+				Cell* rm = current;
+				current = current->next;
+				free(rm);
+			}
+			return;
 		}	
 	}
 }
@@ -75,9 +119,48 @@ int main(){
 		clear
 		printMenu
 		int input = nextInt();
-//		if (input == Load){
-//			
-//		}
+		if (input == Load){
+			int count;
+			FILE *fptr = fopen("cells.mouj", "rb");
+			if(fptr == NULL){
+				printf("Load failed!\nplease make sure file is closed");
+				continue;
+			}
+			fread(&count,sizeof(int) , 1,fptr);
+			for(int i = 0; i < count; i++){
+				Cell * writeCell = (Cell*) malloc(sizeof(Cell));
+				fread(writeCell, sizeof(Cell), 1, fptr);
+				writeCell->next= NULL;
+				if(head == NULL){
+					head = writeCell;
+				}
+				else{
+					Cell*current = head;
+					
+					while(current->next != NULL){
+						current = current->next;
+					}
+					current->next = writeCell;
+				}
+			} 
+			
+			fclose(fptr);
+			fptr = fopen("map.mouj","rb");
+			if(fptr == NULL){
+				printf("Load failed!\nplease make sure file is closed");
+				continue;
+			}
+			int n;
+			fread(&n,sizeof(int),1,fptr);
+			Tile map[n][n];
+			for2(n){
+				fread(&map[i][j] , sizeof(Tile) , 1 ,fptr);
+			}
+			bool sp;
+			fread(&sp,sizeof(bool),1,fptr);
+			fclose(fptr);
+			startGame(n,map,sp,true);
+		}
 		if (input == Sp || input == Mp){
 			unsigned int n;
 			char cd[100];
@@ -343,5 +426,21 @@ void randomMove(int n,Tile map[n][n],Cell * movingCell){
 	}
 }
 
-removeCell ()
+void removeCell (Cell* movingCell){
+	Cell* current = head;
+	if (movingCell == head)
+	{
+		head = head->next;
+		free(movingCell);
+		return;
+	}
+	while (current->next != movingCell){
+		current = current->next;
+	}
+	if (current->next->next == NULL) 
+		current->next = NULL;
+	else
+		current->next = current->next->next;
+	free(movingCell);
+}
 
