@@ -17,6 +17,7 @@ void randomMove(int n,Tile map[n][n],Cell * movingCell);
 
 void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 	if (!loaded){
+		printf ("Please Enter Number Of Cells : ");
 		int cellNum = nextInt();
 		count(cellNum){
 			int randX = randomNumber(0,n);
@@ -118,6 +119,27 @@ void startGame(int n,Tile map[n][n],bool singlePlayer,bool loaded){
 			fclose(fptr);
 		}
 		if (play == 5){
+			int sum=0,sum1=0,sum2=0;
+			Cell* total = head;
+			Cell* totalmp = head;
+			if (singlePlayer){
+				while (total!= NULL){
+					sum += total->energy;
+					total = total->next;
+				}
+				printf ("Energy Of Player Is %d",sum);
+			}
+			else{
+				while (totalmp != NULL){
+					if (totalmp->team == 1) sum1 += totalmp->energy;
+					else sum2 += totalmp->energy;
+					totalmp = totalmp->next;
+				}
+				printf ("Energy Of Player X Is %d",sum1);
+				printf ("Energy Of Player O Is %d",sum2);
+			}
+			fflush(stdin);
+			getch();
 			Cell * current = head;
 			head = NULL;
 			while(current != NULL){
@@ -198,6 +220,7 @@ int main(){
 		if (input == Sp || input == Mp){
 			unsigned int n;
 			char cd[100];
+			printf ("Please Enter The Name Of File : ");
 			scanf("%s" , cd);
 			FILE *fp = fopen(cd, "rb");
 			fread(&n, sizeof(unsigned int),1,fp);
@@ -240,8 +263,7 @@ Cell* addCell (int x,int y,int team){
 	return cell;
 }
 
-void SetConsoleColour(WORD* Attributes, DWORD Colour)
-{
+void SetConsoleColour(WORD* Attributes, DWORD Colour){
     CONSOLE_SCREEN_BUFFER_INFO Info;
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     GetConsoleScreenBufferInfo(hStdout, &Info);
@@ -283,8 +305,7 @@ void printMap(int n,Tile map[n][n]){
 			printf("       " , getSymbol(i,j,n,map));
 			normal
 			printf(" ");
-			if(i != 0)
-			{
+			if(i != 0){
 				if(map[i-1][j+1].type == Forbidden) red;
 				if(map[i-1][j+1].type == Energy) yellow;
 				if(map[i-1][j+1].type == Mitosis) green;
@@ -292,8 +313,7 @@ void printMap(int n,Tile map[n][n]){
 				printf("_______",getSymbol(i-1,j+1,n,map));
 				normal
 			}
-			else
-			{
+			else{
 				normal
 				printf("       ");
 			}
@@ -344,8 +364,7 @@ void printMap(int n,Tile map[n][n]){
 				normal
 				printf(" ");
 			}
-			else
-			{
+			else{
 				normal
 				printf("       " , getSymbol(i+1,j,n,map));
 				printf(" ");
@@ -573,8 +592,7 @@ void randomMove(int n,Tile map[n][n],Cell * movingCell){
 
 void removeCell (Cell* movingCell){
 	Cell* current = head;
-	if (movingCell == head)
-	{
+	if (movingCell == head){
 		head = head->next;
 		free(movingCell);
 		return;
@@ -588,4 +606,3 @@ void removeCell (Cell* movingCell){
 		current->next = current->next->next;
 	free(movingCell);
 }
-
